@@ -9,6 +9,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+func HandleHealthCheck(c echo.Context) error {
+	return c.String(http.StatusOK, "Welcome to the URL Shortener")
+}
+
+func HandleHomePage(c echo.Context) error {
+	return c.String(http.StatusOK, "Welcome to the URL Shortener")
+}
+
 func HandleShortenURL(c echo.Context) error {
 	req := new(entity.Request)
 

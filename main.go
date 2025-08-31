@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"kaung-htet-hein-dev/URL-shortener-go/handler"
-	"net/http"
 	"os"
 
 	"github.com/labstack/echo/v4"
@@ -19,9 +18,9 @@ func main() {
 
 	e := echo.New()
 
-	e.GET("/health", func(c echo.Context) error {
-		return c.String(http.StatusOK, "hello, this is URL Shortener")
-	})
+	e.GET("/", handler.HandleHomePage)
+
+	e.GET("/health", handler.HandleHealthCheck)
 	e.GET("/:code", handler.HandleRedirectURL)
 	e.POST("/shorten-url", handler.HandleShortenURL)
 
