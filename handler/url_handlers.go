@@ -1,13 +1,16 @@
-package main
+package handler
 
 import (
+	"kaung-htet-hein-dev/URL-shortener-go/db"
+	"kaung-htet-hein-dev/URL-shortener-go/entity"
+	"kaung-htet-hein-dev/URL-shortener-go/util"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
-func handleShortenURL(c echo.Context) error {
-	req := new(Request)
+func HandleShortenURL(c echo.Context) error {
+	req := new(entity.Request)
 
 	if err := c.Bind(req); err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
@@ -17,9 +20,9 @@ func handleShortenURL(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Please provide url."})
 	}
 
-	randomCode := GenerateRandomCode()
+	randomCode := util.GenerateRandomCode()
 
-	data := DB.Create(&URL{
+	data := db.DB.Create(&entity.URL{
 		OriginalURL:   req.OriginalURL,
 		ShortenedCode: randomCode,
 	})
@@ -29,14 +32,14 @@ func handleShortenURL(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{
-		"shortened_url": GetHostDomainAddress(c) + "/" + randomCode,
+		"shortened_url": util.GetHostDomainAddress(c) + "/" + randomCode,
 		"original_url":  req.OriginalURL,
 	})
 }
 
-func handleRedirectURL(c echo.Context) error {
+func HandleRedirectURL(c echo.Context) error {
 	code := c.Param("code")
-	completedURL, err := FindInDB(code)
+	completedURL, err := util.FindInDB(code)
 
 	if err != nil {
 		return c.JSON(http.StatusNotFound, echo.Map{"error": "URL not found"})

@@ -1,8 +1,11 @@
-package main
+package util
 
 import (
 	"fmt"
 	"math/rand"
+
+	"kaung-htet-hein-dev/URL-shortener-go/db"
+	"kaung-htet-hein-dev/URL-shortener-go/entity"
 
 	"github.com/labstack/echo/v4"
 )
@@ -30,9 +33,9 @@ func GetHostDomainAddress(c echo.Context) string {
 }
 
 func FindInDB(code string) (string, error) {
-	var url URL
+	var url entity.URL
 
-	err := DB.Where("shortened_code = ?", code).First(&url).Error
+	err := db.DB.Where("shortened_code = ?", code).First(&url).Error
 
 	if err != nil {
 		return "", err
